@@ -19,7 +19,7 @@
 #include "../../configuration/include/configuration.hpp"
 
 // Credentials
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__QNX__)
 #include "../include/credentials.hpp"
 #endif
 
@@ -46,7 +46,7 @@ local_server_endpoint_impl::local_server_endpoint_impl(
     acceptor_.listen(boost::asio::socket_base::max_connections, ec);
     boost::asio::detail::throw_error(ec, "acceptor listen");
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__QNX__)
     if (_host->get_configuration()->is_security_enabled()) {
         credentials::activate_credentials(acceptor_.native());
     }
@@ -69,7 +69,7 @@ local_server_endpoint_impl::local_server_endpoint_impl(
    acceptor_.assign(_local.protocol(), native_socket, ec);
    boost::asio::detail::throw_error(ec, "acceptor assign native socket");
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__QNX__)
     if (_host->get_configuration()->is_security_enabled()) {
         credentials::activate_credentials(acceptor_.native());
     }
@@ -177,7 +177,7 @@ void local_server_endpoint_impl::accept_cbk(
 
     if (!_error) {
         socket_type &new_connection_socket = _connection->get_socket();
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__QNX__)
         auto its_host = host_.lock();
         if (its_host) {
             if (its_host->get_configuration()->is_security_enabled()) {

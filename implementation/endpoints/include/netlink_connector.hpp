@@ -6,7 +6,7 @@
 #ifndef NETLINK_CONNECTOR_HPP_
 #define NETLINK_CONNECTOR_HPP_
 
-#ifndef WIN32
+#if !defined(_WIN32) && !defined(__QNX__)
 
 #include <sys/socket.h>
 #include <linux/netlink.h>

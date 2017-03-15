@@ -15,7 +15,8 @@ namespace vsomeip {
 namespace sd {
 
 // TODO: throw exception if this constructor is used
-entry_impl::entry_impl() {
+entry_impl::entry_impl() :
+  options_(2) {
     type_ = entry_type_e::UNKNOWN;
     major_version_ = 0;
     service_ = 0x0;
@@ -25,7 +26,8 @@ entry_impl::entry_impl() {
     num_options_[1] = 0;
 }
 
-entry_impl::entry_impl(const entry_impl &_entry) {
+entry_impl::entry_impl(const entry_impl &_entry) :
+  options_(2) {
     type_ = _entry.type_;
     major_version_ = _entry.major_version_;
     service_ = _entry.service_;

@@ -65,7 +65,7 @@ protected:
     major_version_t major_version_;
     ttl_t ttl_;
 
-    std::vector<uint8_t> options_[VSOMEIP_MAX_OPTION_RUN];
+    std::vector<std::vector<uint8_t>> options_;
 
     uint8_t num_options_[VSOMEIP_MAX_OPTION_RUN];
 

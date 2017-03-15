@@ -90,7 +90,7 @@ signed_size_type recvfrom(socket_type s, buf* bufs, size_t count,
   *addrlen = msg.msg_namelen;
   if (result >= 0) {
     ec = boost::system::error_code();
-
+#ifndef __QNX__
 	// Find destination address
 	for (struct cmsghdr *cmsg = CMSG_FIRSTHDR(&msg);
 		 cmsg != NULL;
@@ -105,6 +105,7 @@ signed_size_type recvfrom(socket_type s, buf* bufs, size_t count,
 	    da = boost::asio::ip::address_v4(ntohl(pi->ipi_addr.s_addr));
 	  } 
 	}      
+#endif
   }
   return result;
 #endif // defined(BOOST_ASIO_WINDOWS) || defined(__CYGWIN__)

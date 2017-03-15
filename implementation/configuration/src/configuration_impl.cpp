@@ -1281,14 +1281,21 @@ void configuration_impl::load_payload_sizes(const element &_element) {
     const std::string payload_sizes("payload-sizes");
     const std::string max_local_payload_size("max-payload-size-local");
     const std::string buffer_shrink_threshold("buffer-shrink-threshold");
+
     try {
-        if (_element.tree_.get_child_optional(max_local_payload_size)) {
+       if (_element.tree_.get_child_optional(max_local_payload_size)) {
             auto mpsl = _element.tree_.get_child(max_local_payload_size);
             std::string s(mpsl.data());
             try {
+#ifdef __QNX__
+                // add 16 Byte for the SOME/IP header
+                max_local_message_size_ = static_cast<std::uint32_t>(std::strtoul(
+                        s.c_str(), NULL, 10) + 16);
+#else
                 // add 16 Byte for the SOME/IP header
                 max_local_message_size_ = static_cast<std::uint32_t>(std::stoul(
                         s.c_str(), NULL, 10) + 16);
+#endif
             } catch (const std::exception &e) {
                 VSOMEIP_ERROR<< __func__ << ": " << max_local_payload_size
                         << " " << e.what();
@@ -1298,8 +1305,13 @@ void configuration_impl::load_payload_sizes(const element &_element) {
             auto bst = _element.tree_.get_child(buffer_shrink_threshold);
             std::string s(bst.data());
             try {
+#ifdef __QNX__
+                buffer_shrink_threshold_ = static_cast<std::uint32_t>(
+                        std::strtoul(s.c_str(), NULL, 10));
+#else
                 buffer_shrink_threshold_ = static_cast<std::uint32_t>(
                         std::stoul(s.c_str(), NULL, 10));
+#endif
             } catch (const std::exception &e) {
                 VSOMEIP_ERROR<< __func__ << ": " << buffer_shrink_threshold
                 << " " << e.what();
@@ -1329,6 +1341,16 @@ void configuration_impl::load_payload_sizes(const element &_element) {
                     std::uint32_t its_message_size = 0;
 
                     try {
+#ifdef __QNX__
+                        std::string p(j->second.get_child(port).data());
+                        its_port = static_cast<std::uint16_t>(std::strtoul(p.c_str(),
+                                NULL, 10));
+                        std::string s(j->second.get_child(max_payload_size).data());
+                        // add 16 Byte for the SOME/IP header
+                        its_message_size = static_cast<std::uint32_t>(std::strtoul(
+                                s.c_str(),
+                                NULL, 10) + 16);
+#else
                         std::string p(j->second.get_child(port).data());
                         its_port = static_cast<std::uint16_t>(std::stoul(p.c_str(),
                                 NULL, 10));
@@ -1337,6 +1359,7 @@ void configuration_impl::load_payload_sizes(const element &_element) {
                         its_message_size = static_cast<std::uint32_t>(std::stoul(
                                 s.c_str(),
                                 NULL, 10) + 16);
+#endif
                     } catch (const std::exception &e) {
                         VSOMEIP_ERROR << __func__ << ":" << e.what();
                     }

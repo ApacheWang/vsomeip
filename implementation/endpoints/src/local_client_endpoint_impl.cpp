@@ -17,7 +17,7 @@
 #include "../../configuration/include/configuration.hpp"
 
 // Credentials
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__QNX__)
 #include "../include/credentials.hpp"
 #endif
 
@@ -62,7 +62,7 @@ void local_client_endpoint_impl::connect() {
         error = socket_.connect(remote_, error);
 
 // Credentials
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__QNX__)
         if (!error) {
             auto its_host = host_.lock();
             if (its_host) {
@@ -82,7 +82,7 @@ void local_client_endpoint_impl::connect() {
 }
 
 void local_client_endpoint_impl::receive() {
-#ifndef WIN32
+#if !defined(WIN32) && !defined(__QNX__)
     socket_.async_receive(
         boost::asio::buffer(recv_buffer_),
         std::bind(

@@ -15,7 +15,7 @@ namespace vsomeip {
 namespace sd {
 
 ipv6_option_impl::ipv6_option_impl(bool _is_multicast) :
-        address_({0}) {
+        address_{ {0, 0, 0, 0} } {
     length_ = (1 + 16 + 1 + 1 + 2);
     type_ = (
             _is_multicast ?

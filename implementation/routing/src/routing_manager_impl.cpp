@@ -92,7 +92,7 @@ void routing_manager_impl::init() {
 }
 
 void routing_manager_impl::start() {
-#ifndef WIN32
+#if !defined(_WIN32) && !defined(__QNX__)
     netlink_connector_ = std::make_shared<netlink_connector>(host_->get_io(),
             configuration_->get_unicast_address());
     netlink_connector_->register_net_if_changes_handler(
@@ -126,7 +126,7 @@ void routing_manager_impl::stop() {
         std::lock_guard<std::mutex> its_lock(version_log_timer_mutex_);
         version_log_timer_.cancel();
     }
-#ifndef WIN32
+#if !defined(_WIN32) && !defined(__QNX__)
     if (netlink_connector_) {
         netlink_connector_->stop();
     }
@@ -1549,7 +1549,7 @@ std::shared_ptr<endpoint> routing_manager_impl::create_server_endpoint(
                     its_endpoint->enable_magic_cookies();
                 }
             } else {
-#ifndef WIN32
+#if !defined(_WIN32) && !defined(__QNX__)
                 if (its_unicast.is_v4()) {
                     its_unicast = boost::asio::ip::address_v4::any();
                 } else if (its_unicast.is_v6()) {
@@ -3501,7 +3501,7 @@ void routing_manager_impl::on_net_if_state_changed(std::string _if, bool _availa
         if (_available) {
             VSOMEIP_INFO << "Network interface \"" << _if << "\" is up and running.";
             start_ip_routing();
-#ifndef WIN32
+#if !defined(_WIN32) && !defined(__QNX__)
             if (netlink_connector_) {
                 netlink_connector_->unregister_net_if_changes_handler();
             }
