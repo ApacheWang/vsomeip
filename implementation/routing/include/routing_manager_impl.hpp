@@ -377,7 +377,7 @@ private:
     bool if_state_running_;
     std::mutex pending_sd_offers_mutex_;
     std::vector<std::pair<service_t, instance_t>> pending_sd_offers_;
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__QNX__)
     std::shared_ptr<netlink_connector> netlink_connector_;
 #endif
 

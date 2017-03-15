@@ -6,6 +6,7 @@
 cmake_minimum_required (VERSION 2.8.12)
 project (vsomeip)
 
+set (CMAKE_CXX_STANDARD 11)
 set (VSOMEIP_MAJOR_VERSION 2)
 set (VSOMEIP_MINOR_VERSION 6)
 set (VSOMEIP_PATCH_VERSION 1)
@@ -59,6 +60,15 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
     set(OS_CXX_FLAGS "-pthread")
 endif (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 
+if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
+    set(OS "QNX")
+    set(DL_LIBRARY "")
+    set(EXPORTSYMBOLS "-Wl,-export-dynamic -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/exportmap.gcc")
+    set(NO_DEPRECATED "")
+    set(OPTIMIZE "")
+    set(OS_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -pthread -O -Wall -Wextra -Wformat -Wformat-security -Wconversion -fexceptions -fstrict-aliasing -fstack-protector -fasynchronous-unwind-tables -fno-omit-frame-pointer -D_FORTIFY_SOURCE=2")
+endif (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
+
 # Signal handling
 if (ENABLE_SIGNAL_HANDLING)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DVSOMEIP_ENABLE_SIGNAL_HANDLING")
@@ -96,7 +106,11 @@ IF(DLT_FOUND)
 ENDIF(DLT_FOUND)
 
 # SystemD
+if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
+# QNX doesn't have systemd
+else()
 pkg_check_modules(SystemD "libsystemd")
+endif()
 
 if(NOT SystemD_FOUND)
 MESSAGE( STATUS "Systemd was not found, watchdog disabled!")
@@ -138,7 +152,7 @@ if (MSVC)
     link_directories(${Boost_LIBRARY_DIR_DEBUG})
     ADD_DEFINITIONS( -DBOOST_ALL_DYN_LINK )
 else()
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${OS} ${OS_CXX_FLAGS} -DUSE_VSOMEIP_STATISTICS -DBOOST_LOG_DYN_LINK -g ${OPTIMIZE} -std=c++0x ${NO_DEPRECATED} ${EXPORTSYMBOLS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${OS} ${OS_CXX_FLAGS} -DUSE_VSOMEIP_STATISTICS -DBOOST_LOG_DYN_LINK -g ${OPTIMIZE} ${NO_DEPRECATED} ${EXPORTSYMBOLS}")
     set(USE_RT "rt")
 endif()
 
