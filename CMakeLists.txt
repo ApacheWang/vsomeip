@@ -82,7 +82,8 @@ include_directories(
 find_package(Threads REQUIRED)
 
 # Boost
-find_package( Boost 1.55 COMPONENTS system thread log REQUIRED )
+set(Boost_USE_STATIC_LIBS_ON)
+find_package( Boost 1.55 COMPONENTS log thread system REQUIRED )
 include_directories( ${Boost_INCLUDE_DIR} )
 
 if(Boost_FOUND)
@@ -152,7 +153,7 @@ if (MSVC)
     link_directories(${Boost_LIBRARY_DIR_DEBUG})
     ADD_DEFINITIONS( -DBOOST_ALL_DYN_LINK )
 else()
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${OS} ${OS_CXX_FLAGS} -DUSE_VSOMEIP_STATISTICS -DBOOST_LOG_DYN_LINK -g ${OPTIMIZE} ${NO_DEPRECATED} ${EXPORTSYMBOLS}")
+    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D${OS} ${OS_CXX_FLAGS} -DUSE_VSOMEIP_STATISTICS -g ${OPTIMIZE} ${NO_DEPRECATED} ${EXPORTSYMBOLS}")
 if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
     set(USE_RT "")
 else()
