@@ -48,7 +48,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     set(EXPORTSYMBOLS "-Wl,-export-dynamic -Wl,--version-script=${CMAKE_CURRENT_SOURCE_DIR}/exportmap.gcc")
     set(NO_DEPRECATED "")
     set(OPTIMIZE "")
-    set(OS_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -pthread -O -Wall -Wextra -Wformat -Wformat-security -Wconversion -fexceptions -fstrict-aliasing -fstack-protector -fasynchronous-unwind-tables -fno-omit-frame-pointer -D_FORTIFY_SOURCE=2")
+    set(OS_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -pthread -O -Wall -Wextra -Wformat -Wformat-security -Wconversion -fexceptions -fstrict-aliasing -fstack-protector -fasynchronous-unwind-tables -fno-omit-frame-pointer -D_FORTIFY_SOURCE=2 -DBOOST_LOG_DYN_LINK")
 endif (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
@@ -67,6 +67,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
     set(NO_DEPRECATED "")
     set(OPTIMIZE "")
     set(OS_CXX_FLAGS "-D_GLIBCXX_USE_NANOSLEEP -lsocket -O -Wall -Wextra -Wformat -Wformat-security -Wconversion -fexceptions -fstrict-aliasing -fstack-protector -fasynchronous-unwind-tables -fno-omit-frame-pointer -D_FORTIFY_SOURCE=2")
+    set(Boost_USE_STATIC_LIBS_ON)
 endif (${CMAKE_SYSTEM_NAME} MATCHES "QNX")
 
 # Signal handling
@@ -82,7 +83,6 @@ include_directories(
 find_package(Threads REQUIRED)
 
 # Boost
-set(Boost_USE_STATIC_LIBS_ON)
 find_package( Boost 1.55 COMPONENTS log thread system REQUIRED )
 include_directories( ${Boost_INCLUDE_DIR} )
 
