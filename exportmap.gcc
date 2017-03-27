@@ -38,6 +38,8 @@ global:
         vsomeip::sd::runtime::*;
         *vsomeip::utility;
         vsomeip::utility::is*;
+        *vsomeip::payload_impl;
+        vsomeip::payload_impl*;
     }; 
     VSOMEIP_CFG_RUNTIME;
     VSOMEIP_SD_RUNTIME;
